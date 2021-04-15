@@ -11,70 +11,49 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ForgotPassword extends AppCompatActivity {
-
-   TextView forgotpwdproceed;
-   EditText name, email, phone, password;
-    boolean isNameValid, isEmailValid, isPhoneValid, isPasswordValid;
-    TextInputLayout nameError, emailError, phoneError, passError;
-
+public class ForgotPassword extends AppCompatActivity
+{
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgotpassword);
-        email = (EditText) findViewById(R.id.email);
-        emailError = (TextInputLayout) findViewById(R.id.emailError);
-        //forgotpwdproceed = (Button) findViewById(R.id.forgotpwdproceed);
-        forgotpwdproceed = (TextView) findViewById(R.id.forgotpwdproceed);
-
-
-//        forgotpwdproceed.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SetValidation();
-//            }
-//        });
-
-        forgotpwdproceed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // redirect to ValidOTPActivity
-                Intent intent = new Intent(getApplicationContext(), ValidateOtp.class);
-                startActivity(intent);
-            }
-        });
-
-
-
     }
 
-    public void SetValidation() {
+    public void proceedToNextActivity(View view)
+    {
+        if(!isEmailCorrect())
+        {
+            return;
+        }
 
+        startActivity(new Intent(ForgotPassword.this, ValidateSecurityQuestions.class));
+    }
+
+    public boolean isEmailCorrect()
+    {
+        boolean isEmailValid = false;
+
+        EditText email = (EditText) findViewById(R.id.email);
+        TextInputLayout emailError = (TextInputLayout) findViewById(R.id.emailError);
 
         // Check for a valid email address.
-        if (email.getText().toString().isEmpty()) {
+        if (email.getText().toString().isEmpty())
+        {
             emailError.setError(getResources().getString(R.string.email_error));
-            isEmailValid = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches()) {
+        }
+
+        else if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches())
+        {
             emailError.setError(getResources().getString(R.string.error_invalid_email));
-            isEmailValid = false;
-        } else {
+        }
+
+        else
+        {
             isEmailValid = true;
             emailError.setErrorEnabled(false);
         }
 
-        // Check for a valid phone number.
-        if (phone.getText().toString().isEmpty()) {
-            phoneError.setError(getResources().getString(R.string.phone_error));
-            isPhoneValid = false;
-        } else {
-            isPhoneValid = true;
-            phoneError.setErrorEnabled(false);
-        }
-
-
-        if (isEmailValid) {
-            Toast.makeText(getApplicationContext(), "Successfully", Toast.LENGTH_SHORT).show();
-        }
+        return isEmailValid;
     }
 }
